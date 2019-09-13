@@ -46,5 +46,5 @@ $('#choosePlayerButtonGITHUB').on('click', function () {
 
     let domainIndex = window.location.href.indexOf(window.location.pathname);
     let domain = window.location.href.substring(0, domainIndex + 1);
-    window.open(domain + '/rpg_game/player_dashboard.html?id=' + id, '_self');
+    window.open(domain + 'rpg_game/player_dashboard.html?id=' + id, '_self');
 });

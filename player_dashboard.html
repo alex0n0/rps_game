@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+
+<body>
+    <header></header>
+    <main>
+        <div class="container mb-3">
+            <div class="row mt-3">
+                <nav class="col-12">
+                    <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
+                            role="tab" aria-controls="nav-home" aria-selected="true">Create Game</a>
+                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
+                            role="tab" aria-controls="nav-profile" aria-selected="false">Join Game</a>
+                    </div>
+                </nav>
+
+
+
+            </div>
+            <div class="row">
+                <div class="tab-content col-12" id="nav-tabContent">
+                    <div class="tab-pane fade show active border border-top-0 p-3" id="nav-home" role="tabpanel"
+                        aria-labelledby="nav-home-tab">
+                        <div id="gamemodeCreate">
+                            <button id="gamemodeCreateButton" class="btn btn-primary btn-block mb-3">CREATE</button>
+                            <div class="input-group mb-3">
+                                <input id="gamemodeCreateSessionid" type="text" class="form-control"
+                                    placeholder="session id" readOnly>
+                                <div class="input-group-append">
+                                    <button id="gamemodeCreateCopy" class="btn btn-outline-primary"
+                                        style="width: 5rem;">COPY</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="gamestatusCreate">
+                            <p class="bg-light border px-2 text-secondary m-0">status:</p>
+                        </div>
+                    </div>
+
+
+
+                    <div class="tab-pane fade  border border-top-0 p-3" id="nav-profile" role="tabpanel"
+                        aria-labelledby="nav-profile-tab">
+                        <div id="gamemodeJoin">
+                            <div class="input-group mb-3">
+                                <input id="gamemodeJoinSessionid" type="text" class="form-control"
+                                    placeholder="enter session id">
+                                <div class="input-group-append">
+                                    <button id="gamemodeJoinButton" class="btn btn-outline-primary"
+                                        style="width: 5rem;">JOIN</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="gamestatusJoin">
+                            <p class="bg-light border px-2 text-secondary m-0">status:</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="container mb-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <div id="gameBattlefield" class="border p-3 overflow-hidden d-none">
+                        <button class="buttonRPS btn btn-dark m-1" style="height: 120px; width: 100px;"
+                            data-choice="rock">ROCK</button>
+                        <button class="buttonRPS btn btn-dark m-1" style="height: 120px; width: 100px;"
+                            data-choice="paper">PAPER</button>
+                        <button class="buttonRPS btn btn-dark m-1" style="height: 120px; width: 100px;"
+                            data-choice="scissors">SCISSORS</button>
+                    </div>
+                </div>
+                <div class="col-12 text-center">
+                    <div id="gameBattlefieldQuit" class="p-3 overflow-hidden d-none">
+                        <button id="quitButton" class="btn btn-danger">QUIT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="border p-3">
+                        <div id="gameResults" class="border overflow-auto bg-light" style="max-height: 250px;">
+                            <!-- <p class="p-2 text-secondary">Round 5: LOSE
+                                <br>
+                                <span style="margin-left: 20px;"></span>(rock (you) vs scissors (opponent))</p> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+
+    <footer></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-firestore.js"></script>
+
+    <script defer src="./assets/javascript/dashboard.js"></script>
+
+
+</body>
+
+</html>

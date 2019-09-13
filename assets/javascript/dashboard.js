@@ -87,7 +87,9 @@ function createGameFunction() {
                         $('#gamestatusCreate > p').text('status: Successfully connection, begin playing');
                         console.log('player 2 found: ' + doc.data().p2);
                         // unsubscribeOpponentChoices();
-                        $('.buttonRPS').on('click', rpsFunction);
+                        $('.buttonRPSRock').on('click', rpsFunction);
+                        $('.buttonRPSPaper').on('click', rpsFunction);
+                        $('.buttonRPSScissors').on('click', rpsFunction);
 
                         unsubscribeOpponentChoices = db.collection("w7hw_rps_sessions").doc(sessionid).collection('results')
                             .onSnapshot(function (querySnapshot) {
@@ -141,6 +143,17 @@ $('#gamemodeCreateCopy').on('click', function () {
 $('#gamemodeJoinButton').on('click', joinGameFunction);
 
 function joinGameFunction() {
+    if (unsubscribeOpponentConnection != undefined) {
+        unsubscribeOpponentConnection();
+    }
+    
+    if (unsubscribeOpponentChoices != undefined) {
+        unsubscribeOpponentChoices();
+    }
+
+    if (unsubscribeOpponentQuit != undefined) {
+        unsubscribeOpponentQuit();
+    }
     sessionid = $('#gamemodeJoinSessionid').val();
 
     if (sessionid.length != 0) {
@@ -176,7 +189,11 @@ function joinGameFunction() {
                         .then(function () {
                             console.log("Document successfully written!");
                             $('#gamestatusJoin > p').text('status: Successfully connection, begin playing');
-                            $('.buttonRPS').on('click', rpsFunction);
+
+                            $('.buttonRPSRock').on('click', rpsFunction);
+                            $('.buttonRPSPaper').on('click', rpsFunction);
+                            $('.buttonRPSScissors').on('click', rpsFunction);
+
                             $('#gamemodeJoinSessionid').attr('readOnly', true);
                             unsubscribeOpponentChoices = db.collection("w7hw_rps_sessions").doc(sessionid).collection('results')
                                 .onSnapshot(function (querySnapshot) {
@@ -204,8 +221,6 @@ function joinGameFunction() {
                                         quitFunction();
                                     }
                                 });
-
-
                         })
                         .catch(function (error) {
                             console.error("Error writing document: ", error);
@@ -236,33 +251,25 @@ function joinGameFunction() {
 
 
 function rpsFunction() {
-    console.log('how many times');
-
     if (turnPlayer <= turnOpponent) {
         turnPlayer++;
 
         choicePlayer = $(this).attr('data-choice');
         console.log('my turn: ', turnPlayer, ' my choice: ', choicePlayer);
-        db.collection("w7hw_rps_sessions").doc(sessionid).get().then(function (doc) {
-            if (doc.data().status == gameStates[1]) {
-                db.collection("w7hw_rps_sessions").doc(sessionid).collection("results").add({
-                    time: new Date().valueOf(),
-                    id: objData.id,
-                    result: choicePlayer
-                })
-                    .then(function (docRef) {
-                        // console.log("Document written with ID: ", docRef.id);
-                        if (turnPlayer == turnOpponent) {
-                            evalResults(choicePlayer, choiceOpponent);
-                        }
-                    })
-                    .catch(function (error) {
-                        console.error("Error adding document: ", error);
-                    });
-            }
-        });
-
-
+        db.collection("w7hw_rps_sessions").doc(sessionid).collection("results").add({
+            time: new Date().valueOf(),
+            id: objData.id,
+            result: choicePlayer
+        })
+            .then(function (docRef) {
+                // console.log("Document written with ID: ", docRef.id);
+                if (turnPlayer == turnOpponent) {
+                    evalResults(choicePlayer, choiceOpponent);
+                }
+            })
+            .catch(function (error) {
+                console.error("Error adding document: ", error);
+            });
     } else {
         console.log('...waiting for opponent');
     }
@@ -318,12 +325,28 @@ function quitFunction() {
         unsubscribeOpponentQuit();
     }
 
-    $('.buttonRPS').off();
+
+    $('#homeButton').on('click', function() {
+        console.log('asdf');
+        window.open('./index.html', '_self');
+    });
+    $('#replayButton').on('click', function() {
+        location.reload();
+    });
+
+    $('#gameBattlefieldEndButtons').removeClass('d-none');
+
+    $('.buttonRPSRock').off();
+    $('.buttonRPSPaper').off();
+    $('.buttonRPScissors').off();
+    
+    
 
     $('#gamemodeCreateSessionid').val('');
     $('#gamemodeJoinSessionid').val('');
     $('#gameBattlefield').addClass('d-none');
     $('#gameBattlefieldQuit').addClass('d-none');
+    
     $('#gameResults').empty();
 
     $('#gamemodeCreateButton').on('click', createGameFunction);

@@ -28,23 +28,24 @@ let db = firebase.firestore();
 
 
 
-console.log(window.location.href);
-console.log(window.location.pathname);
+// console.log(window.location.href);
+// console.log(window.location.pathname);
 
 
 $('#choosePlayerButton').on('click', function () {
     let id = $('#choosePlayerSelect').prop('options')[$('#choosePlayerSelect').prop('selectedIndex')].value;
     console.log(id);
 
-    let domainIndex = window.location.href.indexOf(window.location.pathname);
-    let domain = window.location.href.substring(0, domainIndex + 1);
-    window.open(domain + 'player_dashboard.html?id=' + id, '_self');
+    // let domainIndex = window.location.href.indexOf(window.location.pathname);
+    // let domain = window.location.href.substring(0, domainIndex + 1);
+    // window.open(domain + 'player_dashboard.html?id=' + id, '_self');
+    window.open('./player_dashboard.html?id=' + id, '_self');
 });
-$('#choosePlayerButtonGITHUB').on('click', function () {
-    let id = $('#choosePlayerSelect').prop('options')[$('#choosePlayerSelect').prop('selectedIndex')].value;
-    console.log(id);
+// $('#choosePlayerButtonGITHUB').on('click', function () {
+//     let id = $('#choosePlayerSelect').prop('options')[$('#choosePlayerSelect').prop('selectedIndex')].value;
+//     console.log(id);
 
-    let domainIndex = window.location.href.indexOf(window.location.pathname);
-    let domain = window.location.href.substring(0, domainIndex + 1);
-    window.open(domain + 'rps_game/player_dashboard.html?id=' + id, '_self');
-});
+//     let domainIndex = window.location.href.indexOf(window.location.pathname);
+//     let domain = window.location.href.substring(0, domainIndex + 1);
+//     window.open('./player_dashboard.html?id=' + id, '_self');
+// });

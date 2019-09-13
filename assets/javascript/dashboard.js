@@ -34,7 +34,7 @@ console.log(objData);
 
 let gameStates = ['waiting', 'playing', 'ended'];
 
-
+let unsubscribeOpponentConnection;
 let unsubscribeOpponentChoices;
 let unsubscribeOpponentQuit;
 
@@ -47,12 +47,24 @@ let choiceOpponent;
 
 $('#gamemodeCreateButton').on('click', createGameFunction);
 function createGameFunction() {
-    $('#gamemodeCreateButton').unbind();
+    if (unsubscribeOpponentConnection != undefined) {
+        unsubscribeOpponentConnection();
+    }
+    
+    if (unsubscribeOpponentChoices != undefined) {
+        unsubscribeOpponentChoices();
+    }
+
+    if (unsubscribeOpponentQuit != undefined) {
+        unsubscribeOpponentQuit();
+    }
+
     $('#gamemodeCreateButton').attr('disabled', true);
     $('#nav-profile-tab').removeAttr('href', '');
     $('#nav-profile-tab').removeAttr('data-toggle', '');
     $('#nav-home-tab').removeAttr('href', '');
     $('#nav-home-tab').removeAttr('data-toggle', '');
+    $('#gamemodeCreateButton').off();
 
     let gameState = gameStates[0];
     db.collection("w7hw_rps_sessions").add({
@@ -68,19 +80,21 @@ function createGameFunction() {
             $('#gameBattlefield').removeClass('d-none');
             $('#gameBattlefieldQuit').removeClass('d-none');
 
-            unsubscribeOpponentChoices = db.collection("w7hw_rps_sessions").doc(sessionid)
+            unsubscribeOpponentConnection = db.collection("w7hw_rps_sessions").doc(sessionid)
                 .onSnapshot(function (doc) {
-                    console.log(doc.data());
+                    // console.log(doc.data());
                     if (doc.data().status == gameStates[1]) {
                         $('#gamestatusCreate > p').text('status: Successfully connection, begin playing');
                         console.log('player 2 found: ' + doc.data().p2);
-                        unsubscribeOpponentChoices();
+                        // unsubscribeOpponentChoices();
                         $('.buttonRPS').on('click', rpsFunction);
 
-                        unsubscribeOpponentChoices = db.collection("w7hw_rps_sessions").doc(sessionid).collection('results').orderBy("time", "desc")
+                        unsubscribeOpponentChoices = db.collection("w7hw_rps_sessions").doc(sessionid).collection('results')
                             .onSnapshot(function (querySnapshot) {
+
                                 querySnapshot.docChanges().forEach(function (change) {
                                     if (change.type === "added") {
+                                        console.log(change.doc.data());
                                         if (change.doc.data().id != objData.id) {
                                             turnOpponent++;
                                             console.log('opponent turn: ', turnOpponent, ' opponent choice: ', change.doc.data().result, ' (id: ', change.doc.data().id, ', time: ', change.doc.data().time, ')');
@@ -92,14 +106,15 @@ function createGameFunction() {
                                     }
                                 });
                             });
-                        unsubscribeOpponentQuit = db.collection("w7hw_rps_sessions").doc(sessionid)
-                            .onSnapshot({
-                                includeMetadataChanges: true
-                            }, function (doc) {
-                                if (doc.data().status == gameStates[2]) {
-                                    quitFunction();
-                                }
-                            });
+                    }
+                });
+
+            unsubscribeOpponentQuit = db.collection("w7hw_rps_sessions").doc(sessionid)
+                .onSnapshot({
+                    includeMetadataChanges: true
+                }, function (doc) {
+                    if (doc.data().status == gameStates[2]) {
+                        quitFunction();
                     }
                 });
         })
@@ -145,7 +160,7 @@ function joinGameFunction() {
                     $('#gameBattlefield').removeClass('d-none');
                     $('#gameBattlefieldQuit').removeClass('d-none');
 
-                    $('#gamemodeJoinButton').unbind();
+                    $('#gamemodeJoinButton').off();
                     $('#gamemodeJoinButton').attr('disabled', 'true');
                     $('#nav-profile-tab').removeAttr('href', '');
                     $('#nav-profile-tab').removeAttr('data-toggle', '');
@@ -168,6 +183,7 @@ function joinGameFunction() {
 
                                     querySnapshot.docChanges().forEach(function (change) {
                                         if (change.type === "added") {
+                                            console.log(change.doc.data());
                                             if (change.doc.data().id != objData.id) {
                                                 turnOpponent++;
                                                 console.log('opponent turn: ', turnOpponent, ' opponent choice: ', change.doc.data().result, ' (id: ', change.doc.data().id, ', time: ', change.doc.data().time, ')');
@@ -179,24 +195,7 @@ function joinGameFunction() {
                                         }
                                     });
                                 });
-                            // unsubscribeOpponentQuit = db.collection("w7hw_rps_sessions").doc(sessionid)
-                            //     .onSnapshot(function (querySnapshot) {
 
-                            //         querySnapshot.docChanges().forEach(function (change) {
-                            //             if (change.type === "modified") {
-                            //                 // console.log(change.doc.data());
-                            //                 if (change.doc.data().id != objData.id) {
-                            //                     console.log(change.doc.data());
-                            //                     // turnOpponent++;
-                            //                     // console.log('opponent turn: ', turnOpponent, ' opponent choice: ', change.doc.data().result, ' (id: ', change.doc.data().id, ', time: ', change.doc.data().time, ')');
-                            //                     // choiceOpponent = change.doc.data().result;
-                            //                     // if (turnPlayer == turnOpponent) {
-                            //                     //     evalResults(choicePlayer, choiceOpponent);
-                            //                     // }
-                            //                 }
-                            //             }
-                            //         });
-                            //     });
                             unsubscribeOpponentQuit = db.collection("w7hw_rps_sessions").doc(sessionid)
                                 .onSnapshot({
                                     includeMetadataChanges: true
@@ -205,6 +204,7 @@ function joinGameFunction() {
                                         quitFunction();
                                     }
                                 });
+
 
                         })
                         .catch(function (error) {
@@ -236,6 +236,7 @@ function joinGameFunction() {
 
 
 function rpsFunction() {
+    console.log('how many times');
 
     if (turnPlayer <= turnOpponent) {
         turnPlayer++;
@@ -304,9 +305,20 @@ function evalResults(playerChoice, opponentChoice) {
 $(window).bind("beforeunload", quitFunction);
 $('#quitButton').on('click', quitFunction);
 function quitFunction() {
-    unsubscribeOpponentChoices();
-    unsubscribeOpponentQuit();
+    // location.reload();
 
+    if (unsubscribeOpponentConnection != undefined) {
+        unsubscribeOpponentConnection();
+    }
+    if (unsubscribeOpponentChoices != undefined) {
+        unsubscribeOpponentChoices();
+    }
+
+    if (unsubscribeOpponentQuit != undefined) {
+        unsubscribeOpponentQuit();
+    }
+
+    $('.buttonRPS').off();
 
     $('#gamemodeCreateSessionid').val('');
     $('#gamemodeJoinSessionid').val('');
